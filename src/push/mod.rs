@@ -133,6 +133,8 @@ impl<H: AccumulatedNalHandler> NalFragmentHandler for NalAccumulator<H> {
     /// *   the NAL is totally empty.
     /// *   `bufs` is empty and `end` is false.
     fn nal_fragment(&mut self, bufs: &[&[u8]], end: bool) {
+        println!("Ignore: {:?}", self.interest);
+        println!("Bufs: {:?}", bufs);
         if self.interest != NalInterest::Ignore {
             let nal = if !self.buf.is_empty() {
                 println!("Not empty");
