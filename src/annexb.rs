@@ -182,7 +182,7 @@ impl<H: NalFragmentHandler> AnnexBReader<H> {
                 ParseState::InUnitTwoZero => {
                     match b {
                         0x00 => {
-                            println!("triple 0");
+                            println!("triple 0, buf: {:?}", buf);
                             self.maybe_emit(buf, fake_and_start, i, 2, true);
                             fake_and_start = None;
                             self.to(ParseState::StartTwoZero);
