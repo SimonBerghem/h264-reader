@@ -182,11 +182,13 @@ impl<H: NalFragmentHandler> AnnexBReader<H> {
                 ParseState::InUnitTwoZero => {
                     match b {
                         0x00 => {
+                            println!("triple 0");
                             self.maybe_emit(buf, fake_and_start, i, 2, true);
                             fake_and_start = None;
                             self.to(ParseState::StartTwoZero);
                         },
                         0x01 => {
+                            println!("double 0");
                             self.maybe_emit(buf, fake_and_start, i, 2, true);
                             fake_and_start = Some((0, i + 1));
                             self.to(ParseState::InUnit);
@@ -230,12 +232,17 @@ impl<H: NalFragmentHandler> AnnexBReader<H> {
         match fake_and_start {
             Some((fake, start)) if start + backtrack < end => {
                 if fake > 0 {
+                    println!("fake");
                     self.inner.nal_fragment(&[&[0u8; 2][..fake], &buf[start..end - backtrack]][..], is_end);
                 } else {
+                    println!("not fake");
                     self.inner.nal_fragment(&[&buf[start..end - backtrack]][..], is_end);
                 };
             },
-            Some(_) if is_end => self.inner.nal_fragment(&[], true),
+            Some(_) if is_end => {
+                self.inner.nal_fragment(&[], true);
+                println!("is end")
+            },
             _ => {},
         }
     }

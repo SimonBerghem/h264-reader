@@ -135,10 +135,13 @@ impl<H: AccumulatedNalHandler> NalFragmentHandler for NalAccumulator<H> {
     fn nal_fragment(&mut self, bufs: &[&[u8]], end: bool) {
         if self.interest != NalInterest::Ignore {
             let nal = if !self.buf.is_empty() {
+                println!("Not empty");
                 RefNal::new(&self.buf[..], bufs, end)
             } else if bufs.is_empty() {
+                println!("Is empty");
                 return;  // no-op.
             } else {
+                println!("Else empty");
                 RefNal::new(bufs[0], &bufs[1..], end)
             };
 
@@ -151,11 +154,15 @@ impl<H: AccumulatedNalHandler> NalFragmentHandler for NalAccumulator<H> {
                         self.buf.extend_from_slice(b);
                     }
                 },
-                NalInterest::Ignore => self.interest = NalInterest::Ignore,
+                NalInterest::Ignore => {
+                    println!("Ignore");
+                    self.interest = NalInterest::Ignore;   
+                },
                 _ => {},
             }
         }
         if end {
+            println!("END");
             self.buf.clear();
             self.interest = NalInterest::Buffer;
         }
